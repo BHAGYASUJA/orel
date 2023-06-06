@@ -1,44 +1,49 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
-// void main() {
-//   runApp(SaveUserApp());
-// }
-
-// class SaveUserApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Save User',
-//       theme: ThemeData(
-//         primarySwatch: Colors.blue,
-//       ),
-//       home: SaveUserScreen(),
-//     );
-//   }
-// }
-
-class SaveUserScreen extends StatefulWidget {
-  @override
-  _SaveUserScreenState createState() => _SaveUserScreenState();
+void main() {
+  runApp(SignUpApp());
 }
 
-class _SaveUserScreenState extends State<SaveUserScreen> {
-  Future<void> saveUser() async {
+class SignUpApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Sign Up Page',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: SignUpScreen(),
+    );
+  }
+}
+
+class SignUpScreen extends StatefulWidget {
+  @override
+  _SignUpScreenState createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
+
+  Future<void> signUpUser() async {
     final url = Uri.parse('https://llabdemo.orell.com/api/userService/anonymous/saveUser');
     final body = jsonEncode({
       "academicYearId": "93",
       "address": "ORELL SOFTWARE SOLUTIONS PVT LTD\nBCG TOWER 1ST FLOOR",
       "createdBy": "poonam.orell1",
-      "emailId": "sarish@orell.in",
+      "emailId": _emailController.text,
       "image": "",
       "institutionId": 32,
       "mobileCode": "",
       "mobileNo": "1234567890",
       "modifiedBy": "poonam.orell1",
-      "name": "Orell Test",
-      "password": "123456",
+      "name": _nameController.text,
+      "password": _passwordController.text,
       "status": "N",
       "userClassDetailsList": [
         {
@@ -50,7 +55,7 @@ class _SaveUserScreenState extends State<SaveUserScreen> {
       "classId": "793",
       "userClassId": 0,
       "userId": "0",
-      "userCode": "sarish.orell1",
+      "userCode": _emailController.text,
       "userType": "STUDENT",
       "whatsappCode": "",
       "whatsappNo": "1234567890"
@@ -63,21 +68,62 @@ class _SaveUserScreenState extends State<SaveUserScreen> {
       print(responseData);
       // Handle success response here
     } else {
-      print('Failed to save user.');
+      print('Failed to sign up.');
       // Handle error response here
     }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Save User'),
+        title: Text('Sign Up'),
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: saveUser,
-          child: Text('Save User'),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _nameController,
+              decoration: InputDecoration(
+                labelText: 'Name',
+              ),
+            ),
+            TextField(
+              controller: _emailController,
+              decoration: InputDecoration(
+                labelText: 'Email',
+              ),
+            ),
+            TextField(
+              controller: _passwordController,
+              decoration: InputDecoration(
+                labelText: 'Password',
+              ),
+              obscureText: true,
+            ),
+            TextField(
+              controller: _confirmPasswordController,
+              decoration: InputDecoration(
+                labelText: 'Confirm Password',
+              ),
+              obscureText: true,
+            ),
+            SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: signUpUser,
+              child: Text('Sign Up'),
+            ),
+          ],
         ),
       ),
     );
